@@ -27,7 +27,7 @@ class User extends Model {
   //  Recebe todos os models.
   //  BelongsTo - Tipo de relacionamento, Pertence a. Model de Usuario pertence a um model de File.
   static associate(models) {
-    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
+    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
   }
 
   checkPassword(password) {
