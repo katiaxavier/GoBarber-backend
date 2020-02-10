@@ -61,6 +61,12 @@ class AppointmentsController {
         .json({ error: 'You can only create appointments with providers' });
     }
 
+    if (req.userId === provider_id) {
+      return res
+        .status(401)
+        .json({ error: 'You cannot request an appointment' });
+    }
+
     const hourStart = startOfHour(parseISO(date));
 
     /** Check for past dates */
@@ -94,17 +100,15 @@ class AppointmentsController {
      */
 
     const user = await User.findByPk(req.userId);
-    const formatteDate = format(
-      hourStart,
-      "'dia' dd 'de' MMMM', às' H:mm'h'",
-      { locale: pt }
-    )
+    const formatteDate = format(hourStart, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+      locale: pt,
+    });
 
     await Notification.create({
       content: `Novo agendamento de ${user.name} para o ${formatteDate}`,
       user: provider_id,
     });
-    
+
     return res.json(appointment);
   }
 }
